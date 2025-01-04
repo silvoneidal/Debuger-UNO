@@ -13,6 +13,19 @@ Begin VB.Form Main
    ScaleHeight     =   5025
    ScaleWidth      =   6270
    StartUpPosition =   2  'CenterScreen
+   Begin MSComctlLib.ProgressBar pgbBuffer 
+      Height          =   345
+      Left            =   120
+      TabIndex        =   22
+      Top             =   4440
+      Width           =   2295
+      _ExtentX        =   4048
+      _ExtentY        =   609
+      _Version        =   393216
+      BorderStyle     =   1
+      Appearance      =   0
+      Scrolling       =   1
+   End
    Begin VB.CommandButton cmdPause 
       Caption         =   "Pause"
       BeginProperty Font 
@@ -574,9 +587,11 @@ On Error GoTo Erro
             
             ' Sinaliza dado recebido
             lblRx.BackColor = vbRed
+            pgbBuffer.Value = MapValue(Len(strData), 0, 1024, 0, 100) ' Mapeando um valor de 0 a 1024 para 0 a 100
             DoEvents
             Sleep 100
             lblRx.BackColor = &H80&
+            pgbBuffer.Value = 0
             DoEvents
             
     End Select
@@ -627,6 +642,23 @@ Private Function SearchChar(search As String)
         ' Não encontrado
         SearchChar = False
     End If
+
+End Function
+
+Public Function MapValue(ByVal x As Single, ByVal in_min As Single, ByVal in_max As Single, ByVal out_min As Single, ByVal out_max As Single) As Single
+
+  ' Verifica se o valor de entrada está dentro do intervalo válido.  Caso contrário, retorna o valor mínimo ou máximo.
+  If x < in_min Then
+    MapValue = out_min
+    Exit Function
+  End If
+  If x > in_max Then
+    MapValue = out_max
+    Exit Function
+  End If
+
+  ' Fórmula de interpolação linear
+  MapValue = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 End Function
 
