@@ -3,14 +3,14 @@ Object = "{648A5603-2C6E-101B-82B6-000000000014}#1.1#0"; "MSCOMM32.OCX"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form Main 
    BorderStyle     =   1  'Fixed Single
-   ClientHeight    =   4905
+   ClientHeight    =   5025
    ClientLeft      =   1350
    ClientTop       =   2970
    ClientWidth     =   6270
    Icon            =   "Main.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
-   ScaleHeight     =   4905
+   ScaleHeight     =   5025
    ScaleWidth      =   6270
    StartUpPosition =   2  'CenterScreen
    Begin VB.TextBox txtData 
@@ -27,7 +27,41 @@ Begin VB.Form Main
       Left            =   120
       TabIndex        =   16
       Top             =   4440
-      Width           =   6015
+      Width           =   2895
+   End
+   Begin VB.CommandButton cmdPause 
+      Caption         =   "Pause"
+      BeginProperty Font 
+         Name            =   "Courier New"
+         Size            =   9
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   350
+      Left            =   3240
+      TabIndex        =   19
+      Top             =   4440
+      Width           =   1335
+   End
+   Begin VB.CommandButton cmdReset 
+      Caption         =   "Reset"
+      BeginProperty Font 
+         Name            =   "Courier New"
+         Size            =   9
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   350
+      Left            =   4680
+      TabIndex        =   18
+      Top             =   4440
+      Width           =   1335
    End
    Begin VB.Timer Timer1 
       Interval        =   500
@@ -287,13 +321,35 @@ Begin VB.Form Main
       _Version        =   393216
       DTREnable       =   -1  'True
    End
+   Begin VB.Label lblRx 
+      Alignment       =   2  'Center
+      Appearance      =   0  'Flat
+      BackColor       =   &H00000080&
+      BorderStyle     =   1  'Fixed Single
+      Caption         =   "Rx"
+      BeginProperty Font 
+         Name            =   "Courier New"
+         Size            =   9
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   345
+      Left            =   240
+      TabIndex        =   20
+      Top             =   4440
+      Width           =   1335
+   End
    Begin VB.Shape shpConnect 
       BackColor       =   &H000000FF&
       BackStyle       =   1  'Opaque
       BorderStyle     =   0  'Transparent
       Height          =   135
       Left            =   -120
-      Top             =   4800
+      Top             =   4920
       Width           =   6495
    End
    Begin VB.Label lblData 
@@ -331,13 +387,6 @@ Begin VB.Form Main
       TabIndex        =   3
       Top             =   5880
       Width           =   1455
-   End
-   Begin VB.Label lblRx 
-      Height          =   375
-      Left            =   5760
-      TabIndex        =   18
-      Top             =   4440
-      Width           =   375
    End
    Begin VB.Menu mTerminal 
       Caption         =   "Terminal"
@@ -454,7 +503,7 @@ On Error GoTo Erro
         MSComm1.CommPort = Mid(cboCommPort.Text, 4, 2)
         MSComm1.Settings = cboBaudRate.Text & "n,8,1"
         MSComm1.RThreshold = 1
-        MSComm1.DTREnable = True
+        MSComm1.DTREnable = False
         MSComm1.RTSEnable = True
         MSComm1.PortOpen = True
         cboCommPort.Enabled = False
@@ -490,6 +539,7 @@ Private Sub MSComm1_OnComm()
 On Error GoTo Erro
 
     If MSComm1.PortOpen = False Then Exit Sub
+    If cmdPause.Caption = "Run" Then Exit Sub
 
     Select Case MSComm1.CommEvent
         Case comEvReceive
@@ -510,10 +560,10 @@ On Error GoTo Erro
             End If
             
             ' Sinaliza dado recebido
-            shpConnect.Visible = False
+            lblRx.BackColor = vbRed
             DoEvents
             Sleep 100
-            shpConnect.Visible = True
+            lblRx.BackColor = &H80&
             DoEvents
             
     End Select
@@ -575,6 +625,23 @@ Private Sub cmdSendData_Click()
     cboSendData.AddItem cboSendData.Text
     deleteDuplicados
     cboSendData.Text = Empty
+    
+End Sub
+
+Private Sub cmdPause_Click()
+    If cmdPause.Caption = "Pause" Then
+        cmdPause.Caption = "Run"
+    Else
+        cmdPause.Caption = "Pause"
+    End If
+
+End Sub
+
+Private Sub cmdReset_Click()
+    ' Efetua um reset de hardware
+    MSComm1.DTREnable = True
+    Sleep (250)
+    MSComm1.DTREnable = False
     
 End Sub
 
