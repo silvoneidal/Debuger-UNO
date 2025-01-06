@@ -41,6 +41,8 @@ void loop() {
 
     digitalWrite(13, LOW);
     debug.print(1, 0);
-    delay(500); 
+    delay(500);
+    
+    debug.print(2, millis());
 
 }

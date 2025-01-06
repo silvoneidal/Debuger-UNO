@@ -440,6 +440,8 @@ Dim Titulo As String
 Dim Index As Integer
 Dim nIndex As Integer
 Dim Value As String
+Dim lines() As String
+Dim lastNewLine As Long
 
 Private Sub Form_Load()
     
@@ -465,15 +467,17 @@ On Error GoTo Erro
     lstDebuger.ToolTipText = "Selecione um index para editar a variável."
         
     ' Adiciona lista de baudrate
-    cboBaudRate.AddItem "1200"
-    cboBaudRate.AddItem "2400"
-    cboBaudRate.AddItem "4800"
-    cboBaudRate.AddItem "9600"
-    cboBaudRate.AddItem "19200"
-    cboBaudRate.AddItem "38400"
-    cboBaudRate.AddItem "57600"
-    cboBaudRate.AddItem "115200"
-    cboBaudRate.ListIndex = 3
+    With cboBaudRate
+        .AddItem "1200"
+        .AddItem "2400"
+        .AddItem "4800"
+        .AddItem "9600"
+        .AddItem "19200"
+        .AddItem "38400"
+        .AddItem "57600"
+        .AddItem "115200"
+        .ListIndex = 3
+    End With
     
     ' Busca portas disponiveis
     Call cmdScanPort_Click
@@ -573,6 +577,12 @@ On Error GoTo Erro
             strData = MSComm1.Input
             txtData = txtData + strData
             
+            ' Verifica protocolo de dados
+            If Left(txtData, 1) = "#" Then ' And InStr(txtData, Chr(10)) > 0 Then
+                Call UpdateDebuger(txtData)
+                txtData = Empty
+            End If
+            
             ' Atualiza terminal serial
             With txtTerminal
                 .SelStart = Len(txtTerminal.Text)
@@ -580,10 +590,31 @@ On Error GoTo Erro
                 .SelStart = Len(txtTerminal.Text)
             End With
             
-            If Left(txtData, 1) = "#" And InStr(txtData, Chr(10)) > 0 Then
-                Call UpdateDebuger(txtData)
-                txtData = Empty
-            End If
+'            'Verificar se a última linha é new line:
+'            If Len(strData) > 0 Then
+'                lines = Split(strData, vbLf)
+'                If Len(lines(UBound(lines))) = 0 Then
+'                    strData = Empty
+'                    txtData = Empty
+'                End If
+'            End If
+
+'            'Verificar se tem alguma new line:
+'            lastNewLine = InStrRev(strData, vbCrLf)
+'            If lastNewLine = 0 Then
+'              lastNewLine = InStrRev(strData, vbCr)
+'              If lastNewLine = 0 Then
+'                lastNewLine = InStrRev(strData, vbLf)
+'              End If
+'            End If
+'
+'            If lastNewLine > 0 Then
+'              strData = Empty
+'              txtData = Empty
+'              If lastNewLine = Len(strData) Then
+'                'A última linha termina com uma nova linha.
+'              End If
+'            End If
             
             ' Sinaliza dado recebido
             lblRx.BackColor = vbRed
@@ -714,7 +745,8 @@ End Sub
 
 Private Sub cmdAddVariable_Click()
     If txtVariable.Text = Empty Then
-        MsgBox "Digite um nome para variável.", vbInformation, "DALCOQUIO AUTOMAÇÃO"
+        MsgBox "Digite um nome para adicionar uma variável.", vbInformation, "DALCOQUIO AUTOMAÇÃO"
+        lstDebuger.SelectedItem = Nothing
         Exit Sub
     End If
     
@@ -726,13 +758,21 @@ Private Sub cmdAddVariable_Click()
         '.ListItems(.ListItems.Count).SubItems(2) = valorValue
     End With
   
+    lstDebuger.SelectedItem = Nothing
     txtVariable.Text = Empty
+    txtVariable.SetFocus
 
 End Sub
 
 Private Sub cmdEditarVariable_Click()
     Dim item As ListItem
     Set item = lstDebuger.SelectedItem
+    
+    If txtVariable.Text = Empty Then
+        MsgBox "Digite um nome para editar a variável.", vbInformation, "DALCOQUIO AUTOMAÇÃO"
+        lstDebuger.SelectedItem = Nothing
+        Exit Sub
+    End If
     
     ' Verifica se algum index foi selecionado
     If Not item Is Nothing Then
@@ -743,6 +783,8 @@ Private Sub cmdEditarVariable_Click()
     Else
         MsgBox "Nenhum index selecionado.", vbInformation, "DALCOQUIO AUTOMAÇÃO"
     End If
+    
+    lstDebuger.SelectedItem = Nothing
 
 End Sub
 
