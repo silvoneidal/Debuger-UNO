@@ -3,17 +3,31 @@ Object = "{648A5603-2C6E-101B-82B6-000000000014}#1.1#0"; "MSCOMM32.OCX"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form Main 
    BorderStyle     =   1  'Fixed Single
-   ClientHeight    =   4905
+   ClientHeight    =   5025
    ClientLeft      =   1350
    ClientTop       =   2970
    ClientWidth     =   6270
    Icon            =   "Main.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
-   ScaleHeight     =   4905
+   ScaleHeight     =   5025
    ScaleWidth      =   6270
    StartUpPosition =   2  'CenterScreen
-   Begin VB.TextBox txtData 
+   Begin MSComctlLib.ProgressBar pgbBuffer 
+      Height          =   345
+      Left            =   120
+      TabIndex        =   16
+      Top             =   4440
+      Width           =   2295
+      _ExtentX        =   4048
+      _ExtentY        =   609
+      _Version        =   393216
+      BorderStyle     =   1
+      Appearance      =   0
+      Scrolling       =   1
+   End
+   Begin VB.CommandButton cmdPause 
+      Caption         =   "Pause"
       BeginProperty Font 
          Name            =   "Courier New"
          Size            =   9
@@ -23,11 +37,28 @@ Begin VB.Form Main
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   330
-      Left            =   120
-      TabIndex        =   16
+      Height          =   350
+      Left            =   3720
+      TabIndex        =   13
       Top             =   4440
-      Width           =   6015
+      Width           =   1095
+   End
+   Begin VB.CommandButton cmdReset 
+      Caption         =   "Reset"
+      BeginProperty Font 
+         Name            =   "Courier New"
+         Size            =   9
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   350
+      Left            =   4920
+      TabIndex        =   12
+      Top             =   4440
+      Width           =   1095
    End
    Begin VB.Timer Timer1 
       Interval        =   500
@@ -47,9 +78,26 @@ Begin VB.Form Main
       EndProperty
       Height          =   3375
       Left            =   120
-      TabIndex        =   12
+      TabIndex        =   7
       Top             =   960
       Width           =   6015
+      Begin VB.CommandButton cmdEditarVariable 
+         Caption         =   "Editar"
+         BeginProperty Font 
+            Name            =   "Courier New"
+            Size            =   9
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   350
+         Left            =   3600
+         TabIndex        =   14
+         Top             =   2880
+         Width           =   1095
+      End
       Begin VB.TextBox txtVariable 
          BeginProperty Font 
             Name            =   "Courier New"
@@ -62,14 +110,14 @@ Begin VB.Form Main
          EndProperty
          Height          =   350
          Left            =   120
-         TabIndex        =   17
+         TabIndex        =   11
          Top             =   2880
-         Width           =   2775
+         Width           =   3375
       End
       Begin MSComctlLib.ListView lstDebuger 
          Height          =   2535
          Left            =   120
-         TabIndex        =   15
+         TabIndex        =   9
          Top             =   240
          Width           =   5775
          _ExtentX        =   10186
@@ -95,33 +143,16 @@ Begin VB.Form Main
             Strikethrough   =   0   'False
          EndProperty
          Height          =   350
-         Left            =   4560
-         TabIndex        =   14
+         Left            =   4800
+         TabIndex        =   8
          Top             =   2880
-         Width           =   1335
-      End
-      Begin VB.CommandButton cmdAddVariable 
-         Caption         =   "Adicionar"
-         BeginProperty Font 
-            Name            =   "Courier New"
-            Size            =   9
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   350
-         Left            =   3120
-         TabIndex        =   13
-         Top             =   2880
-         Width           =   1335
+         Width           =   1095
       End
    End
    Begin VB.Frame frmConnect 
       Height          =   735
       Left            =   120
-      TabIndex        =   7
+      TabIndex        =   2
       Top             =   120
       Width           =   6015
       Begin VB.CommandButton cmdScanPort 
@@ -137,7 +168,7 @@ Begin VB.Form Main
          EndProperty
          Height          =   350
          Left            =   3120
-         TabIndex        =   11
+         TabIndex        =   6
          Top             =   240
          Width           =   1335
       End
@@ -154,7 +185,7 @@ Begin VB.Form Main
          EndProperty
          Height          =   350
          Left            =   4560
-         TabIndex        =   10
+         TabIndex        =   5
          Top             =   240
          Width           =   1335
       End
@@ -171,7 +202,7 @@ Begin VB.Form Main
          Height          =   345
          Left            =   1560
          Style           =   2  'Dropdown List
-         TabIndex        =   9
+         TabIndex        =   4
          Top             =   240
          Width           =   1335
       End
@@ -188,95 +219,9 @@ Begin VB.Form Main
          Height          =   345
          Left            =   120
          Style           =   2  'Dropdown List
-         TabIndex        =   8
+         TabIndex        =   3
          Top             =   240
          Width           =   1335
-      End
-   End
-   Begin VB.Frame frmTerminal 
-      Caption         =   "Terminal"
-      BeginProperty Font 
-         Name            =   "Courier New"
-         Size            =   9
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   3375
-      Left            =   120
-      TabIndex        =   0
-      Top             =   960
-      Width           =   6015
-      Begin VB.CommandButton cmdSendData 
-         Caption         =   "Enviar"
-         BeginProperty Font 
-            Name            =   "Courier New"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   350
-         Left            =   3120
-         TabIndex        =   6
-         Top             =   2880
-         Width           =   1335
-      End
-      Begin VB.ComboBox cboSendData 
-         BeginProperty Font 
-            Name            =   "Courier New"
-            Size            =   9
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   345
-         Left            =   120
-         TabIndex        =   5
-         Top             =   2880
-         Width           =   2775
-      End
-      Begin VB.CommandButton cmdClearTerminal 
-         Caption         =   "Limpar"
-         BeginProperty Font 
-            Name            =   "Courier New"
-            Size            =   9
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   350
-         Left            =   4560
-         TabIndex        =   2
-         Top             =   2880
-         Width           =   1335
-      End
-      Begin VB.TextBox txtTerminal 
-         BeginProperty Font 
-            Name            =   "Courier New"
-            Size            =   9
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   2535
-         Left            =   120
-         Locked          =   -1  'True
-         MultiLine       =   -1  'True
-         ScrollBars      =   2  'Vertical
-         TabIndex        =   1
-         Top             =   240
-         Width           =   5775
       End
    End
    Begin MSCommLib.MSComm MSComm1 
@@ -287,13 +232,51 @@ Begin VB.Form Main
       _Version        =   393216
       DTREnable       =   -1  'True
    End
+   Begin VB.TextBox txtData 
+      BeginProperty Font 
+         Name            =   "Courier New"
+         Size            =   9
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   330
+      Left            =   120
+      TabIndex        =   10
+      Top             =   4440
+      Width           =   2295
+   End
+   Begin VB.Label lblRx 
+      Alignment       =   2  'Center
+      Appearance      =   0  'Flat
+      BackColor       =   &H00000080&
+      BorderStyle     =   1  'Fixed Single
+      Caption         =   "Rx"
+      BeginProperty Font 
+         Name            =   "Courier New"
+         Size            =   9
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   350
+      Left            =   2520
+      TabIndex        =   15
+      Top             =   4440
+      Width           =   1095
+   End
    Begin VB.Shape shpConnect 
       BackColor       =   &H000000FF&
       BackStyle       =   1  'Opaque
       BorderStyle     =   0  'Transparent
       Height          =   135
       Left            =   -120
-      Top             =   4800
+      Top             =   4920
       Width           =   6495
    End
    Begin VB.Label lblData 
@@ -310,7 +293,7 @@ Begin VB.Form Main
       EndProperty
       Height          =   255
       Left            =   5280
-      TabIndex        =   4
+      TabIndex        =   1
       Top             =   6120
       Width           =   1695
    End
@@ -328,19 +311,9 @@ Begin VB.Form Main
       EndProperty
       Height          =   255
       Left            =   5400
-      TabIndex        =   3
+      TabIndex        =   0
       Top             =   5880
       Width           =   1455
-   End
-   Begin VB.Label lblRx 
-      Height          =   375
-      Left            =   5760
-      TabIndex        =   18
-      Top             =   4440
-      Width           =   375
-   End
-   Begin VB.Menu mTerminal 
-      Caption         =   "Terminal"
    End
    Begin VB.Menu mGerenciador 
       Caption         =   "Gerenciador de Dispositivos"
@@ -359,6 +332,7 @@ Private Declare Sub Sleep Lib "kernel32.dll" (ByVal dwMilliseconds As Long)
 
 Dim Titulo As String
 Dim Index As Integer
+Dim newIndex As Integer
 Dim Value As String
 
 Private Sub Form_Load()
@@ -378,40 +352,33 @@ On Error GoTo Erro
         .ColumnHeaders.Add , , "Valor", 3500 ' Cabeçalho da coluna
     End With
     
-    ' Adiciona index de variáveis
-    For I = 1 To 9
-        lstDebuger.ListItems.Add(I) = I
-    Next
-    
     ' Inicia com nenhum item selecionado
     lstDebuger.SelectedItem = Nothing
     
     ' Informações ao usuário
-    lstDebuger.ToolTipText = "Selecione um index para adicionar uma variável."
+    lstDebuger.ToolTipText = "Selecione um index para editar a variável."
         
     ' Adiciona lista de baudrate
-    cboBaudRate.AddItem "1200"
-    cboBaudRate.AddItem "2400"
-    cboBaudRate.AddItem "4800"
-    cboBaudRate.AddItem "9600"
-    cboBaudRate.AddItem "19200"
-    cboBaudRate.AddItem "38400"
-    cboBaudRate.AddItem "57600"
-    cboBaudRate.AddItem "115200"
-    cboBaudRate.ListIndex = 3
+    With cboBaudRate
+        .AddItem "1200"
+        .AddItem "2400"
+        .AddItem "4800"
+        .AddItem "9600"
+        .AddItem "19200"
+        .AddItem "38400"
+        .AddItem "57600"
+        .AddItem "115200"
+        .ListIndex = 3
+    End With
     
     ' Busca portas disponiveis
     Call cmdScanPort_Click
     
     ' Comandos inicialmente desabilitados
     cmdConnectPort.Enabled = True
-    cmdSendData.Enabled = False
-    frmTerminal.Visible = False
-    frmDebuger.Visible = True
     
     '
     shpConnect.BackColor = vbRed
-    
     '
     txtData.Visible = False
     
@@ -423,16 +390,16 @@ Erro:
 End Sub
 
 Private Sub cmdScanPort_Click()
-    Dim I As Integer
+    Dim i As Integer
     
 On Error GoTo Erro
 
     'Detecta portas disponiveis
     cmdScanPort.Caption = "Scan..."
     cboCommPort.Clear
-    For I = 1 To 32
-        If DetectaPortaCOM(I) <> 0 Then
-            cboCommPort.AddItem "COM" & I
+    For i = 1 To 32
+        If DetectaPortaCOM(i) <> 0 Then
+            cboCommPort.AddItem "COM" & i
         End If
     Next
     cboCommPort.ListIndex = 0
@@ -454,13 +421,12 @@ On Error GoTo Erro
         MSComm1.CommPort = Mid(cboCommPort.Text, 4, 2)
         MSComm1.Settings = cboBaudRate.Text & "n,8,1"
         MSComm1.RThreshold = 1
-        MSComm1.DTREnable = True
+        MSComm1.DTREnable = False
         MSComm1.RTSEnable = True
         MSComm1.PortOpen = True
         cboCommPort.Enabled = False
         cboBaudRate.Enabled = False
         cmdScanPort.Enabled = False
-        cmdSendData.Enabled = True
         shpConnect.BackColor = vbGreen
         Me.Caption = "Conectado na COM" & MSComm1.CommPort & "," & MSComm1.Settings
     ' Desconectar
@@ -470,7 +436,6 @@ On Error GoTo Erro
         cboCommPort.Enabled = True
         cboBaudRate.Enabled = True
         cmdScanPort.Enabled = True
-        cmdSendData.Enabled = False
         shpConnect.BackColor = vbRed
         Me.Caption = Titulo
     End If
@@ -484,111 +449,123 @@ Erro:
 End Sub
 
 Private Sub MSComm1_OnComm()
-    Dim data As String
+    Dim Data As String
     Dim strData As String
     
 On Error GoTo Erro
 
     If MSComm1.PortOpen = False Then Exit Sub
+    If cmdPause.Caption = "Run" Then Exit Sub
 
     Select Case MSComm1.CommEvent
         Case comEvReceive
+            ' Start da sinalização de recepção
+            lblRx.BackColor = vbRed
+            DoEvents
+            
             ' Recebe os dados da serial
             strData = MSComm1.Input
             txtData = txtData + strData
             
-            ' Atualiza terminal serial
-            With txtTerminal
-                .SelStart = Len(txtTerminal.Text)
-                .SelText = strData
-                .SelStart = Len(txtTerminal.Text)
-            End With
-            
-            If Left(txtData, 1) = "#" And InStr(txtData, Chr(10)) > 0 Then
+            ' Verifica protocolo de dados
+            If Left(txtData, 1) = "#" Then ' And InStr(txtData, Chr(10)) > 0 Then
                 Call UpdateDebuger(txtData)
                 txtData = Empty
             End If
             
-            ' Sinaliza dado recebido
-            shpConnect.Visible = False
-            DoEvents
+            ' Stop da sinalização de recepção
+            pgbBuffer.Value = MapValue(Len(strData), 0, 1024, 0, 100) ' Mapeando um valor de 0 a 1024 para 0 a 100
+            lblRx.BackColor = &H80&
             Sleep 100
-            shpConnect.Visible = True
-            DoEvents
+            pgbBuffer.Value = 0
             
     End Select
-    
-    ' End tempo de processo
-    'endTime = Timer
-    'elapsedTime = endTime - startTime
-    'If elapsedTime > 2 Then txtData = Empty ' limpa txtData, pois houve algum erro.
     
 Exit Sub
 
 Erro:
-    If Err = 13 Then Exit Sub
-    MsgBox "Erro " & Err & ". " & Error, vbCritical, "DALCOQUIO AUTOMAÇÃO"
-
-End Sub
-
-Private Function UpdateDebuger(data As String)
-    Index = Int(Mid(data, 2, 1))
-    Value = Mid(data, 3, Len(data))
-    
-    ' Busca caracter indesejado
-    If SearchChar(Value) Then Exit Function
-    
-    Dim item As ListItem
-    Set item = lstDebuger.ListItems(Index)
-    
-    ' Atualiza valor da variavel
-    If Not item Is Nothing Then
-        item.SubItems(2) = Value
-    End If
-    
-End Function
-
-Private Function SearchChar(search As String)
-    Dim strMyString As String
-    Dim intPosition As Integer
-
-    intPosition = InStr(1, search, "#")
-
-    If intPosition > 0 Then
-        ' Encontrado
-        SearchChar = True
+    If Err = 13 Or Err = 35600 Or Err = 8018 Then
+        txtData = Empty
     Else
-        ' Não encontrado
-        SearchChar = False
+        MsgBox "Erro " & Err & ". " & Error, vbCritical, "DALCOQUIO AUTOMAÇÃO"
     End If
+
+End Sub
+
+Private Sub ClearBufferSerial()
+  Dim Data As String
+
+  ' Verifica se há dados disponíveis
+  Do While MSComm1.InBufferCount > 0
+    ' Lê todos os dados disponíveis
+    Data = MSComm1.Input
+    ' Descarta os dados (opcional: você poderia processá-los aqui se necessário)
+  Loop
+End Sub
+
+Private Function UpdateDebuger(Data As String)
+    Index = Int(Mid(Data, 2, 1))
+    Value = Mid(Data, 3, Len(Data))
+    
+    ' Verifica se Index atual existe
+    For i = 1 To Index
+        If Index = i Then
+            ' Atualiza index atual
+            lstDebuger.ListItems(Index).SubItems(2) = Value
+        ElseIf Index > newIndex Then
+            ' Adiciona novo index, variável, valor
+            newIndex = newIndex + 1
+            With lstDebuger
+                .ListItems.Add , , newIndex
+                .ListItems(.ListItems.Count).SubItems(1) = "Variável_" & newIndex
+                .ListItems(.ListItems.Count).SubItems(2) = valorValue
+            End With
+        End If
+    Next i
+    
+End Function
+
+Public Function MapValue(ByVal x As Single, ByVal in_min As Single, ByVal in_max As Single, ByVal out_min As Single, ByVal out_max As Single) As Single
+
+  ' Verifica se o valor de entrada está dentro do intervalo válido.  Caso contrário, retorna o valor mínimo ou máximo.
+  If x < in_min Then
+    MapValue = out_min
+    Exit Function
+  End If
+  If x > in_max Then
+    MapValue = out_max
+    Exit Function
+  End If
+
+  ' Fórmula de interpolação linear
+  MapValue = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 End Function
 
-Private Sub cmdSendData_Click()
-    If MSComm1.PortOpen = False Then Exit Sub
-    If cboSendData.Text = "" Then Exit Sub
-    
-    ' Envia dado pela serial
-    MSComm1.Output = cboSendData.Text
-    
-    'atualiza cboSend
-    cboSendData.AddItem cboSendData.Text
-    deleteDuplicados
-    cboSendData.Text = Empty
-    
+Private Sub cmdPause_Click()
+    If cmdPause.Caption = "Pause" Then
+        cmdPause.Caption = "Run"
+    Else
+        cmdPause.Caption = "Pause"
+        Call ClearBufferSerial
+    End If
+
 End Sub
 
-Private Sub cmdClearTerminal_Click()
-    txtTerminal.Text = Empty
+Private Sub cmdReset_Click()
+    ' Efetua um reset de hardware
+    MSComm1.DTREnable = True
+    Sleep (250)
+    MSComm1.DTREnable = False
     
 End Sub
 
 Private Sub deleteDuplicados()
-    Dim I As Integer, j As Integer
+    Dim i As Integer, j As Integer
     
-    For I = 0 To cboSendData.ListCount
-        For j = I + 1 To cboSendData.ListCount
-            If cboSendData.List(I) = cboSendData.List(j) Then
+    For i = 0 To cboSendData.ListCount
+        For j = i + 1 To cboSendData.ListCount
+            If cboSendData.List(i) = cboSendData.List(j) Then
                 cboSendData.RemoveItem (j)
                 j = j - 1
             End If
@@ -597,9 +574,15 @@ Private Sub deleteDuplicados()
     
 End Sub
 
-Private Sub cmdAddVariable_Click()
+Private Sub cmdEditarVariable_Click()
     Dim item As ListItem
     Set item = lstDebuger.SelectedItem
+    
+    If txtVariable.Text = Empty Then
+        MsgBox "Digite um nome para editar a variável.", vbInformation, "DALCOQUIO AUTOMAÇÃO"
+        lstDebuger.SelectedItem = Nothing
+        Exit Sub
+    End If
     
     ' Verifica se algum index foi selecionado
     If Not item Is Nothing Then
@@ -610,55 +593,14 @@ Private Sub cmdAddVariable_Click()
     Else
         MsgBox "Nenhum index selecionado.", vbInformation, "DALCOQUIO AUTOMAÇÃO"
     End If
-
-End Sub
-
-Private Sub Timer1_Timer()
-    If MSComm1.PortOpen Then Exit Sub
     
-    Dim item As ListItem
-    Set item = lstDebuger.SelectedItem
-    
-    ' Verifica se algum index foi selecionado
-    If lstDebuger.SelectedItem Is Nothing Then
-        cmdAddVariable.Enabled = False
-    Else
-        cmdAddVariable.Enabled = True
-    End If
+    lstDebuger.SelectedItem = Nothing
 
 End Sub
 
 Private Sub cmdClearList_Click()
-    Dim item As ListItem
-    
-    For I = 1 To 9
-        Set item = lstDebuger.ListItems(I)
-        item.SubItems(2) = Empty
-    Next
-    
-    lstDebuger.SelectedItem = Nothing
-    
-'    lstDebuger.ListItems.Clear
-'
-'    ' Adiciona index de variáveis
-'    For I = 1 To 9
-'        lstDebuger.ListItems.Add(I) = I
-'    Next
-'
-'    lstDebuger.SelectedItem = Nothing
-    
-End Sub
-
-Private Sub mTerminal_Click()
-    If frmDebuger.Visible = True Then
-        frmDebuger.Visible = False
-        frmTerminal.Visible = True
-        mTerminal.Caption = "Debuger"
-    Else
-        frmTerminal.Visible = False
-        frmDebuger.Visible = True
-        mTerminal.Caption = "Terminal"
-    End If
+    lstDebuger.ListItems.Clear
+    newIndex = 0
     
 End Sub
 
@@ -720,3 +662,36 @@ End Sub
 '
 'End Function
 
+' Anotações diversas
+'------------------------------------------------------------------------------------------
+'            'Verificar se a última linha é new line:
+'            If Len(strData) > 0 Then
+'                lines = Split(strData, vbLf)
+'                If Len(lines(UBound(lines))) = 0 Then
+'                    strData = Empty
+'                    txtData = Empty
+'                End If
+'            End If
+
+'            'Verificar se tem alguma new line:
+'            lastNewLine = InStrRev(strData, vbCrLf)
+'            If lastNewLine = 0 Then
+'              lastNewLine = InStrRev(strData, vbCr)
+'              If lastNewLine = 0 Then
+'                lastNewLine = InStrRev(strData, vbLf)
+'              End If
+'            End If
+'
+'            If lastNewLine > 0 Then
+'              strData = Empty
+'              txtData = Empty
+'              ClearBufferSerial
+'              If lastNewLine = Len(strData) Then
+'                'A última linha termina com uma nova linha.
+'              End If
+'            End If
+
+' End tempo de processo
+'endTime = Timer
+'elapsedTime = endTime - startTime
+'If elapsedTime > 2 Then txtData = Empty ' limpa txtData, pois houve algum erro.
