@@ -114,7 +114,7 @@ Begin VB.Form Main
          Top             =   2880
          Width           =   3375
       End
-      Begin MSComctlLib.ListView lstDebuger 
+      Begin MSComctlLib.ListView lstDebugger 
          Height          =   2535
          Left            =   120
          TabIndex        =   9
@@ -343,20 +343,20 @@ Private Sub Form_Load()
 On Error GoTo Erro
 
     ' Propriedades para listview
-    lstDebuger.View = lvwReport ' para mostrar as colunas
+    lstDebugger.View = lvwReport ' para mostrar as colunas
 
     ' Adiciona colunas ao listview
-    With lstDebuger
+    With lstDebugger
         .ColumnHeaders.Add , , "Index", 600 ' Cabeçalho da coluna
         .ColumnHeaders.Add , , "Variável", 1600 ' Cabeçalho da coluna
         .ColumnHeaders.Add , , "Valor", 3500 ' Cabeçalho da coluna
     End With
     
     ' Inicia com nenhum item selecionado
-    lstDebuger.SelectedItem = Nothing
+    lstDebugger.SelectedItem = Nothing
     
     ' Informações ao usuário
-    lstDebuger.ToolTipText = "Selecione um index para editar a variável."
+    lstDebugger.ToolTipText = "Selecione um index para editar a variável."
         
     ' Adiciona lista de baudrate
     With cboBaudRate
@@ -469,7 +469,7 @@ On Error GoTo Erro
             
             ' Verifica protocolo de dados
             If Left(txtData, 1) = "#" Then ' And InStr(txtData, Chr(10)) > 0 Then
-                Call UpdateDebuger(txtData)
+                Call UpdateDebugger(txtData)
                 txtData = Empty
             End If
             
@@ -503,7 +503,7 @@ Private Sub ClearBufferSerial()
   Loop
 End Sub
 
-Private Function UpdateDebuger(Data As String)
+Private Function UpdateDebugger(Data As String)
     Index = Int(Mid(Data, 2, 1))
     Value = Mid(Data, 3, Len(Data))
     
@@ -511,11 +511,11 @@ Private Function UpdateDebuger(Data As String)
     For i = 1 To Index
         If Index = i Then
             ' Atualiza index atual
-            lstDebuger.ListItems(Index).SubItems(2) = Value
+            lstDebugger.ListItems(Index).SubItems(2) = Value
         ElseIf Index > newIndex Then
             ' Adiciona novo index, variável, valor
             newIndex = newIndex + 1
-            With lstDebuger
+            With lstDebugger
                 .ListItems.Add , , newIndex
                 .ListItems(.ListItems.Count).SubItems(1) = "Variável_" & newIndex
                 .ListItems(.ListItems.Count).SubItems(2) = valorValue
@@ -576,11 +576,11 @@ End Sub
 
 Private Sub cmdEditarVariable_Click()
     Dim item As ListItem
-    Set item = lstDebuger.SelectedItem
+    Set item = lstDebugger.SelectedItem
     
     If txtVariable.Text = Empty Then
         MsgBox "Digite um nome para editar a variável.", vbInformation, "DALCOQUIO AUTOMAÇÃO"
-        lstDebuger.SelectedItem = Nothing
+        lstDebugger.SelectedItem = Nothing
         Exit Sub
     End If
     
@@ -588,18 +588,18 @@ Private Sub cmdEditarVariable_Click()
     If Not item Is Nothing Then
         ' Alterar variavel do index selecionado
         item.SubItems(1) = txtVariable.Text
-        lstDebuger.SelectedItem = Nothing
+        lstDebugger.SelectedItem = Nothing
         txtVariable.Text = Empty
     Else
         MsgBox "Nenhum index selecionado.", vbInformation, "DALCOQUIO AUTOMAÇÃO"
     End If
     
-    lstDebuger.SelectedItem = Nothing
+    lstDebugger.SelectedItem = Nothing
 
 End Sub
 
 Private Sub cmdClearList_Click()
-    lstDebuger.ListItems.Clear
+    lstDebugger.ListItems.Clear
     newIndex = 0
     
 End Sub
